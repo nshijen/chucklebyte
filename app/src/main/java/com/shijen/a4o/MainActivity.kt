@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun textArea( input: String) {
     Text(text = input, modifier =
-        Modifier.padding(16.dp)
+        Modifier.padding(16.dp))
 
 }
 
