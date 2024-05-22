@@ -21,10 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             _4oTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    TextArea(input = "Hello Shijen", Modifier.padding(innerPadding))
                 }
             }
         }
@@ -32,10 +29,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun textArea( input: String) {
-    Text(text = input, modifier =
-        Modifier.padding(16.dp))
-
+fun TextArea(input: String, modifier: Modifier) {
+    Text(text = input, modifier = modifier)
 }
 
 
