@@ -1,5 +1,6 @@
 package com.shijen.a4o
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -47,10 +50,30 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         BottomAppBar {
                             Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly){
-                                Button(onClick = { }) {
+                                Button(onClick = {
+                                    viewModel.saveJoke()
+                                }) {
                                     Text(text = "Like")
                                 }
-                                Button(onClick = { }) {
+                                Button(onClick = {
+                                    val sendIntent: Intent = Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        viewModel.joke.value?.let {
+                                            when (it.type) {
+                                                JokeType.SINGLE.type -> {
+                                                    putExtra(Intent.EXTRA_TEXT, "Hey, check out this joke: ${it.joke}")
+                                                }
+                                                JokeType.TWOPART.type -> {
+                                                    putExtra(Intent.EXTRA_TEXT, "Hey, check out this joke: ${it.setup} ${it.delivery}")
+                                                }
+                                                else -> {}
+                                            }
+                                        }
+                                        type = "text/plain"
+                                    }
+                                    val shareIntent = Intent.createChooser(sendIntent, null)
+                                    startActivity(shareIntent)
+                                }) {
                                     Text(text = "Share")
                                 }
                             }
@@ -65,7 +88,6 @@ class MainActivity : ComponentActivity() {
                                 JokeType.SINGLE.type -> {
                                     TextArea(input = it.joke, Modifier.padding(innerPadding))
                                 }
-
                                 JokeType.TWOPART.type -> {
                                     TextArea(input = it.setup, Modifier.padding(innerPadding))
                                     TextArea(input = it.delivery, Modifier.padding(innerPadding))
@@ -74,6 +96,23 @@ class MainActivity : ComponentActivity() {
                         }
                         Button(onClick = { viewModel.getJoke() }) {
                             Text(text = "Give me another one")
+                        }
+
+                        LazyColumn {
+                            viewModel.savedJokes.value.let {
+                                items(it) { joke ->
+                                    when (joke.type) {
+                                        JokeType.SINGLE.type -> {
+                                            TextArea(input = joke.joke, Modifier.padding(innerPadding))
+                                        }
+
+                                        JokeType.TWOPART.type -> {
+                                            TextArea(input = joke.setup, Modifier.padding(innerPadding))
+                                            TextArea(input = joke.delivery, Modifier.padding(innerPadding))
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

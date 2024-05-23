@@ -11,6 +11,8 @@ composeBom = "2023.08.00"
 retrofit = "2.9.0"
 converterGson = "2.9.0"
 loggingInterceptor = "4.9.0"
+room = "2.4.1"
+kapt = "1.9.0"
 
 
 [libraries]
@@ -33,7 +35,13 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 converterGson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converterGson" }
 loggingInterceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
 
+room = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+roomCompiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+roomKtx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+
 
