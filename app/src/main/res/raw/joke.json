@@ -1,0 +1,17 @@
+{
+    "error": false,
+    "category": "Dark",
+    "type": "single",
+    "joke": "I hate double standards. Burn a body at a crematorium, you're \"being a respectful friend.\" Do it at home and you're \"destroying evidence.\"",
+    "flags": {
+    "nsfw": false,
+    "religious": false,
+    "political": false,
+    "racist": false,
+    "sexist": false,
+    "explicit": true
+},
+    "safe": false,
+    "id": 274,
+    "lang": "en"
+}
