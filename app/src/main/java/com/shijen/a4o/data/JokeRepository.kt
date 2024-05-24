@@ -14,29 +14,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
-class JokeRepository @Inject constructor(@ApplicationContext application: Context) {
-    private val baseUrl = "https://v2.jokeapi.dev/"
-    private val logger = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .client(OkHttpClient.Builder().addInterceptor(logger).build())
-        .build()
-
-    private val api = retrofit.create(JokesApi::class.java)
-
-    private fun getJokeApi() = api
-
+class JokeRepository @Inject constructor(private val api: JokesApi, private val db: AppDatabase) {
 
     suspend fun getJoke(): JokeResp {
         return api.getJoke()
     }
-
-
-
-    private val db = AppDatabase.getDb(application)
 
     private fun getJokeDao() = db.jokeDao()
 

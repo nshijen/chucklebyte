@@ -44,7 +44,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val TAG = "MainActivity"
     lateinit var viewModel: MainViewModel
-    private val jokeState = mutableStateOf<JokeResp?>(null)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

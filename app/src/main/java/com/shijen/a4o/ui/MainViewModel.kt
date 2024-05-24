@@ -18,15 +18,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(val jokeRepository: JokeRepository, @ApplicationContext val application: Context): ViewModel() {
+class MainViewModel @Inject constructor(private val jokeRepository: JokeRepository) : ViewModel() {
     private val TAG = "MainViewModel"
     private val _jokeState = mutableStateOf<JokeResp?>(null)
     val joke: State<JokeResp?> = _jokeState
 
     private val _savedJokes = mutableStateOf(listOf<JokeResp>())
     val savedJokes: State<List<JokeResp>> = _savedJokes
+
     init {
-        println("MainViewModel created")
         getJoke()
         getSavedJokes()
     }
@@ -34,20 +34,20 @@ class MainViewModel @Inject constructor(val jokeRepository: JokeRepository, @App
     fun getJoke() {
         viewModelScope.launch {
             _jokeState.value = jokeRepository.getJoke()
-            Log.d(TAG, ":setting joke value")
         }
     }
 
-    fun saveJoke(){
+    fun saveJoke() {
         joke.value?.let {
             viewModelScope.launch(Dispatchers.IO) {
-                JokeRepository(application = application).insertJoke(it)
+                jokeRepository.insertJoke(it)
             }
         }
     }
-    fun getSavedJokes(){
+
+    private fun getSavedJokes() {
         viewModelScope.launch(Dispatchers.IO) {
-            JokeRepository(application).getAllJokes().let {
+            jokeRepository.getAllJokes().let {
                 val jokeRespList = it.map { jokeEntity ->
                     JokeResp(
                         id = jokeEntity.id,
