@@ -1,21 +1,26 @@
 package com.shijen.a4o.data
 
-import android.util.Log
-import com.shijen.a4o.data.db.AppDatabase
 import com.shijen.a4o.data.db.JokeEntity
-import com.shijen.a4o.data.remote.JokesApi
+import com.shijen.a4o.data.db.LocalDataSource
+import com.shijen.a4o.data.remote.NetworkResult
+import com.shijen.a4o.data.remote.RemoteDataSource
 import com.shijen.a4o.model.JokeResp
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
-class JokeRepository @Inject constructor(private val api: JokesApi, private val db: AppDatabase) {
+class JokeRepository @Inject constructor(
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource
+) {
 
-    private val TAG = "JokeRepository"
-    suspend fun getJoke(): JokeResp {
-        return api.getJoke()
+    suspend fun getJoke(): Flow<NetworkResult<JokeResp>> {
+
+        return flow<NetworkResult<JokeResp>> {
+            emit(remoteDataSource.getJoke())
+        }.onStart { emit(NetworkResult.Loading(true)) }
     }
-
-    private fun getJokeDao() = db.jokeDao()
 
     fun insertJoke(joke: JokeResp) {
         val jokeEntity = JokeEntity(
@@ -25,11 +30,10 @@ class JokeRepository @Inject constructor(private val api: JokesApi, private val 
             delivery = joke.delivery ?: "",
             type = joke.type
         )
-        getJokeDao().insertJoke(jokeEntity)
+        localDataSource.insertJoke(jokeEntity)
     }
 
     fun getAllJokes(): Flow<List<JokeEntity>> {
-        Log.d(TAG, "getAllJokes: ")
-        return getJokeDao().getAllJokes()
+        return localDataSource.getAllJokes()
     }
 }

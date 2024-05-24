@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shijen.a4o.data.JokeRepository
+import com.shijen.a4o.data.remote.NetworkResult
 import com.shijen.a4o.model.JokeResp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +29,21 @@ class MainViewModel @Inject constructor(private val jokeRepository: JokeReposito
 
     fun getJoke() {
         viewModelScope.launch {
-            _jokeState.value = jokeRepository.getJoke()
+            jokeRepository.getJoke().collect { response ->
+                when (response) {
+                    is NetworkResult.Success -> {
+                        _jokeState.value = response.value
+                    }
+
+                    is NetworkResult.Error -> {
+                        Log.d(TAG, "getJoke: ${response.msg}")
+                    }
+
+                    is NetworkResult.Loading -> {
+                        Log.d(TAG, "getJoke: Loading")
+                    }
+                }
+            }
         }
     }
 
