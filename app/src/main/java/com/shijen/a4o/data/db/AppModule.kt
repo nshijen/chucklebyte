@@ -22,7 +22,7 @@ class AppModule {
     @Provides
     fun provideRetrofit(loggingInterceptor: HttpLoggingInterceptor): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://v2.jokeapi.dev/")
+            .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .client(OkHttpClient.Builder().addInterceptor(loggingInterceptor).build())
             .build()

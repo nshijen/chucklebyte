@@ -1,18 +1,13 @@
 package com.shijen.a4o.ui
 
-import android.app.Application
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shijen.a4o.App
 import com.shijen.a4o.data.JokeRepository
 import com.shijen.a4o.model.JokeResp
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -46,9 +41,11 @@ class MainViewModel @Inject constructor(private val jokeRepository: JokeReposito
     }
 
     private fun getSavedJokes() {
-        viewModelScope.launch(Dispatchers.IO) {
-            jokeRepository.getAllJokes().let {
-                val jokeRespList = it.map { jokeEntity ->
+        viewModelScope.launch {
+            var jokeRespList = emptyList<JokeResp>()
+            jokeRepository.getAllJokes().collect { list ->
+                Log.d(TAG, "getSavedJokes: jokes ${list.size}")
+                jokeRespList = list.map { jokeEntity ->
                     JokeResp(
                         id = jokeEntity.id,
                         joke = jokeEntity.joke,

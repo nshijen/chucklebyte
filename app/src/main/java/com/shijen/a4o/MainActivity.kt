@@ -2,7 +2,6 @@ package com.shijen.a4o
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -24,7 +23,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
@@ -34,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
-import com.shijen.a4o.model.JokeResp
 import com.shijen.a4o.model.JokeType
 import com.shijen.a4o.ui.MainViewModel
 import com.shijen.a4o.ui.theme._4oTheme
@@ -109,7 +106,6 @@ class MainActivity : ComponentActivity() {
 
                     }) { innerPadding ->
                     val joke = viewModel.joke.value
-                    Log.d(TAG, "onCreate: ${joke}")
                     Column(
                         modifier = Modifier
                             .padding(innerPadding),

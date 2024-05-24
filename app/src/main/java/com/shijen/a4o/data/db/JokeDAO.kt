@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface JokeDAO {
@@ -12,5 +13,5 @@ interface JokeDAO {
     fun insertJoke(joke: JokeEntity)
 
     @Query("SELECT * FROM JokeEntity")
-    fun getAllJokes(): List<JokeEntity>
+    fun getAllJokes(): Flow<List<JokeEntity>>
 }
