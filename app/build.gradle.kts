@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.dagger.hilt.android.gradle.plugin)
     kotlin("kapt")
 }
 
@@ -66,7 +67,11 @@ dependencies {
 
     implementation(libs.room)
     implementation(libs.roomKtx)
-    kapt(libs.roomCompiler)
+    annotationProcessor(libs.roomCompiler)
+
+    implementation(libs.hiltAndroid)
+    annotationProcessor (libs.hiltCompiler)
+    kapt(libs.hiltCompiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

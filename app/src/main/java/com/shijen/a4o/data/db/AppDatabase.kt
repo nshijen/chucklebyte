@@ -1,6 +1,7 @@
 package com.shijen.a4o.data.db
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -10,7 +11,7 @@ abstract class AppDatabase: RoomDatabase(){
     abstract fun jokeDao(): JokeDAO
 
     companion object {
-        fun getDb(application: Application):AppDatabase{
+        fun getDb(application: Context):AppDatabase{
             val db: AppDatabase = Room.databaseBuilder(application, AppDatabase::class.java, "joke-db").build()
             return db
         }

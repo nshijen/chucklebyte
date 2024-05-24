@@ -1,32 +1,39 @@
 package com.shijen.a4o.ui
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shijen.a4o.App
 import com.shijen.a4o.data.JokeRepository
 import com.shijen.a4o.model.JokeResp
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel: ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(val jokeRepository: JokeRepository, @ApplicationContext val application: Context): ViewModel() {
     private val TAG = "MainViewModel"
     private val _jokeState = mutableStateOf<JokeResp?>(null)
     val joke: State<JokeResp?> = _jokeState
 
     private val _savedJokes = mutableStateOf(listOf<JokeResp>())
     val savedJokes: State<List<JokeResp>> = _savedJokes
-    private val jokeApi = JokeRepository(application = App.instance).getJokeApi()
     init {
         println("MainViewModel created")
         getJoke()
+        getSavedJokes()
     }
 
     fun getJoke() {
         viewModelScope.launch {
-            _jokeState.value = jokeApi.getJoke()
+            _jokeState.value = jokeRepository.getJoke()
             Log.d(TAG, ":setting joke value")
         }
     }
@@ -34,13 +41,13 @@ class MainViewModel: ViewModel() {
     fun saveJoke(){
         joke.value?.let {
             viewModelScope.launch(Dispatchers.IO) {
-                JokeRepository(App.instance).insertJoke(it)
+                JokeRepository(application = application).insertJoke(it)
             }
         }
     }
     fun getSavedJokes(){
-        viewModelScope.launch {
-            JokeRepository(App.instance).getAllJokes().let {
+        viewModelScope.launch(Dispatchers.IO) {
+            JokeRepository(application).getAllJokes().let {
                 val jokeRespList = it.map { jokeEntity ->
                     JokeResp(
                         id = jokeEntity.id,

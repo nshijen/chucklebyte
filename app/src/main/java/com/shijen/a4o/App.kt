@@ -1,13 +1,9 @@
 package com.shijen.a4o
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-class App: Application(){
-    init {
-        instance = this
-    }
+@HiltAndroidApp
+class App: Application() {
 
-    companion object{
-        lateinit var instance:App
-    }
 }

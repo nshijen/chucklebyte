@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="joke_bg">#028391</color>
+    <color name="title_color">#F6DCAC</color>
+    <color name="joke_color">#FEAE6F</color>
+    <color name="button_color">#01204E</color>
+    <color name="saved_joke_bg">#524C42</color>
+    <color name="divider_color">#FFFAF2</color>
 </resources>
