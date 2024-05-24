@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.dagger.hilt.android.gradle.plugin)
-    kotlin("kapt")
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -42,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         resources {
@@ -67,11 +67,10 @@ dependencies {
 
     implementation(libs.room)
     implementation(libs.roomKtx)
-    annotationProcessor(libs.roomCompiler)
+    ksp(libs.roomCompiler)
 
     implementation(libs.hiltAndroid)
-    annotationProcessor (libs.hiltCompiler)
-    kapt(libs.hiltCompiler)
+    ksp(libs.hiltCompiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
