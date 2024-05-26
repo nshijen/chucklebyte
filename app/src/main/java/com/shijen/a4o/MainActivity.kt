@@ -5,16 +5,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import com.shijen.a4o.model.JokeType
 import com.shijen.a4o.ui.MainViewModel
@@ -39,43 +35,28 @@ class MainActivity : ComponentActivity() {
                         BottomBarContent(onLikeClick = {
                             viewModel.saveJoke()
                         }, onShareClick = {
-                            viewModel.joke.value?.let {
-                                val extraString: String = when (it.type) {
-                                    JokeType.SINGLE.type -> {
-                                        "Hey, check out this joke: ${it.joke}"
-                                    }
+                            viewModel.jokeUiState.value?.let {
+                                if (it is JokeUIState.Success) {
+                                    val extraString: String = when (it.joke.type) {
+                                        JokeType.SINGLE.type -> {
+                                            "Hey, check out this joke: ${it.joke.joke}"
+                                        }
 
-                                    JokeType.TWOPART.type -> {
-                                        "Hey, check out this joke: ${it.setup} ${it.delivery}"
-                                    }
+                                        JokeType.TWOPART.type -> {
+                                            "Hey, check out this joke: ${it.joke.setup} ${it.joke.delivery}"
+                                        }
 
-                                    else -> {
-                                        ""
+                                        else -> {
+                                            ""
+                                        }
                                     }
+                                    shareIntent(extraString)
                                 }
-                                shareIntent(extraString)
                             }
                         })
                     }) { innerPadding ->
-                    val joke = viewModel.joke.value
-                    Column(
-                        modifier = Modifier
-                            .padding(innerPadding),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        joke?.let {
-                            JokeComponent(it)
-                        }
-                        CustomButton(
-                            onClick = { viewModel.getJoke() },
-                        ) {
-                            Text(text = "Give me another one", fontSize = 16.sp)
-                        }
-
-                        viewModel.savedJokes.value.let {
-                            SavedJokesList(it)
-                        }
-                    }
+                    val joke = viewModel.jokeUiState.value
+                    MainJokeScreen(joke = joke, viewModel = viewModel, modifier = Modifier.padding(innerPadding))
                 }
             }
         }

@@ -72,6 +72,10 @@ dependencies {
     implementation(libs.hiltAndroid)
     ksp(libs.hiltCompiler)
 
+    implementation(libs.navUi)
+    implementation(libs.navFragment)
+    implementation(libs.navCompose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

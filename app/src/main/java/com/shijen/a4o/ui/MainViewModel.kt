@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shijen.a4o.JokeUIState
 import com.shijen.a4o.data.JokeRepository
 import com.shijen.a4o.data.remote.NetworkResult
 import com.shijen.a4o.model.JokeResp
@@ -15,13 +16,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val jokeRepository: JokeRepository) : ViewModel() {
+
     private val TAG = "MainViewModel"
-    private val _jokeState = mutableStateOf<JokeResp?>(null)
-    val joke: State<JokeResp?> = _jokeState
 
     private val _savedJokes = mutableStateOf(listOf<JokeResp>())
     val savedJokes: State<List<JokeResp>> = _savedJokes
 
+    var jokeUiState = mutableStateOf<JokeUIState>(JokeUIState.Loading(true))
     init {
         getJoke()
         getSavedJokes()
@@ -32,15 +33,17 @@ class MainViewModel @Inject constructor(private val jokeRepository: JokeReposito
             jokeRepository.getJoke().collect { response ->
                 when (response) {
                     is NetworkResult.Success -> {
-                        _jokeState.value = response.value
+                        jokeUiState.value = JokeUIState.Success(response.value)
                     }
 
                     is NetworkResult.Error -> {
+                        jokeUiState.value = JokeUIState.Error(response.code, response.msg ?: "")
                         Log.d(TAG, "getJoke: ${response.msg}")
                     }
 
                     is NetworkResult.Loading -> {
                         Log.d(TAG, "getJoke: Loading")
+                        jokeUiState.value = JokeUIState.Loading(true)
                     }
                 }
             }
@@ -48,9 +51,11 @@ class MainViewModel @Inject constructor(private val jokeRepository: JokeReposito
     }
 
     fun saveJoke() {
-        joke.value?.let {
-            viewModelScope.launch(Dispatchers.IO) {
-                jokeRepository.insertJoke(it)
+        if (jokeUiState.value is JokeUIState.Success) {
+            jokeUiState.value.let { jokeState ->
+                viewModelScope.launch(Dispatchers.IO) {
+                    jokeRepository.insertJoke((jokeState as JokeUIState.Success).joke)
+                }
             }
         }
     }

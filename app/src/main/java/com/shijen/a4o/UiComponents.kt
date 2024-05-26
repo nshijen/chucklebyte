@@ -2,6 +2,7 @@ package com.shijen.a4o
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -12,16 +13,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shijen.a4o.model.JokeResp
@@ -78,16 +87,16 @@ fun BottomBarContent(onLikeClick: () -> Unit = {}, onShareClick: () -> Unit = {}
     BottomAppBar {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             CustomButton(onClick = {
                 onLikeClick()
-            }) {
+            }, modifier = Modifier.weight(1f)) {
                 Text(text = "Like")
             }
             CustomButton(onClick = {
                 onShareClick()
-            }) {
+            }, modifier = Modifier.weight(1f)) {
                 Text(text = "Share")
             }
         }
@@ -119,13 +128,56 @@ fun TextArea(input: String) {
 }
 
 @Composable
-fun CustomButton(onClick: () -> Unit, content: @Composable RowScope.() -> Unit) {
-    Button(
-        onClick = onClick, content = content, modifier = Modifier
-            .padding(16.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = colorResource(id = R.color.button_color),
-            contentColor = colorResource(id = R.color.white)
+fun CustomButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit
+) {
+    ElevatedButton(
+        onClick = onClick,
+        content = content,
+        modifier = modifier
+            .padding(16.dp)
         )
-    )
+}
+
+@Composable
+fun ProgressIndicator() {
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Column(
+            modifier = Modifier.padding(36.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator()
+            Text(text = "Loading ...", modifier = Modifier.padding(16.dp))
+        }
+    }
+}
+
+@Composable
+fun ShowSnackbar(msg: String) {
+    var showSnackbar by remember { mutableStateOf(true) }
+
+    if (showSnackbar) {
+        Snackbar(
+            action = {
+                TextButton(onClick = { showSnackbar = false }) {
+                    Text("Dismiss")
+                }
+            },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(msg)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewJokeComponent() {
+    ProgressIndicator()
+    CustomButton(onClick = { }) {
+        Text(text = "Give me another one", fontSize = 16.sp)
+    }
+    BottomBarContent()
 }
