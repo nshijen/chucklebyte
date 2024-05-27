@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.navUi)
     implementation(libs.navFragment)
     implementation(libs.navCompose)
+    implementation(libs.constraintLayout)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

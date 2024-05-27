@@ -15,6 +15,7 @@ room = "2.6.1"
 hilt = "2.48"
 ksp = "1.9.24-1.0.20"
 nav_version = "2.4.1"
+constraintLayout = "1.0.1"
 
 
 [libraries]
@@ -47,6 +48,8 @@ hiltCompiler = { group = "com.google.dagger", name = "hilt-compiler", version.re
 navFragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "nav_version" }
 navUi = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "nav_version" }
 navCompose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "nav_version" }
+
+constraintLayout =  { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

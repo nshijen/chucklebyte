@@ -1,5 +1,6 @@
 package com.shijen.a4o
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,9 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -33,6 +37,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.shijen.a4o.model.JokeResp
 import com.shijen.a4o.model.JokeType
 
@@ -59,13 +66,16 @@ fun SavedJokesList(it: List<JokeResp>) {
 }
 
 @Composable
-fun JokeComponent(it: JokeResp) {
+fun JokeComponent(
+    it: JokeResp, modifier: Modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp)
+        .clip(RoundedCornerShape(10.dp))
+        .background(color = colorResource(id = R.color.joke_bg))
+) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .background(color = colorResource(id = R.color.joke_bg))
+        modifier = modifier
+
     ) {
         when (it.type) {
             JokeType.SINGLE.type -> {
@@ -138,7 +148,7 @@ fun CustomButton(
         content = content,
         modifier = modifier
             .padding(16.dp)
-        )
+    )
 }
 
 @Composable
@@ -168,6 +178,35 @@ fun ShowSnackbar(msg: String) {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(msg)
+        }
+    }
+}
+
+@Composable
+fun BottomNavigationBar(navController: NavHostController) {
+    var selected = Screens.MainScreen.route
+    navController.addOnDestinationChangedListener { controller, destination, arguments ->
+        Log.d("TEst", "BottomNavigationBar: ${destination.hierarchy}")
+        destination.route?.let {
+            selected = it
+        }
+    }
+    val items = listOf(Screens.MainScreen, Screens.SavedList)
+
+    NavigationBar {
+        items.forEach { screen ->
+            NavigationBarItem(
+                selected = selected == screen.route,
+                onClick = { navController.navigate(screen.route) },
+                icon = {
+                    Icon(
+                        imageVector = screen.icon,
+                        contentDescription = screen.label
+                    )
+                },
+                label = { Text(screen.label) },
+                alwaysShowLabel = true
+            )
         }
     }
 }

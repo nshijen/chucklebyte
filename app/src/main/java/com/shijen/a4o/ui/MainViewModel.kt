@@ -9,6 +9,7 @@ import com.shijen.a4o.JokeUIState
 import com.shijen.a4o.data.JokeRepository
 import com.shijen.a4o.data.remote.NetworkResult
 import com.shijen.a4o.model.JokeResp
+import com.shijen.a4o.model.JokeType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +24,7 @@ class MainViewModel @Inject constructor(private val jokeRepository: JokeReposito
     val savedJokes: State<List<JokeResp>> = _savedJokes
 
     var jokeUiState = mutableStateOf<JokeUIState>(JokeUIState.Loading(true))
+
     init {
         getJoke()
         getSavedJokes()
@@ -77,5 +79,28 @@ class MainViewModel @Inject constructor(private val jokeRepository: JokeReposito
                 _savedJokes.value = jokeRespList
             }
         }
+    }
+
+    fun getJokeText(): String {
+        var extraString = ""
+        jokeUiState.value.let {
+            if (it is JokeUIState.Success) {
+
+                extraString = when (it.joke.type) {
+                    JokeType.SINGLE.type -> {
+                        "Hey, check out this joke: ${it.joke.joke}"
+                    }
+
+                    JokeType.TWOPART.type -> {
+                        "Hey, check out this joke: ${it.joke.setup} ${it.joke.delivery}"
+                    }
+
+                    else -> {
+                        ""
+                    }
+                }
+            }
+        }
+        return extraString
     }
 }
