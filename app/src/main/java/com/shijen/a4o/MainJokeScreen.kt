@@ -1,8 +1,5 @@
 package com.shijen.a4o
 
-import android.content.Context
-import android.content.Intent
-import android.widget.ImageButton
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,18 +21,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModelProvider
 import com.shijen.a4o.ui.MainViewModel
 
 @Composable
 fun MainJokeScreen(modifier: Modifier = Modifier) {
-    val viewModel = ViewModelProvider(LocalContext.current as MainActivity).get(MainViewModel::class.java)
+    val viewModel =
+        ViewModelProvider(LocalContext.current as MainActivity).get(MainViewModel::class.java)
     val context = LocalContext.current as MainActivity
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (content, newJoke) = createRefs()
@@ -64,17 +60,37 @@ fun MainJokeScreen(modifier: Modifier = Modifier) {
                     ShowSnackbar(joke.msg)
                 } else if (joke is JokeUIState.Success) {
                     joke?.let {
-                        JokeComponent(it.joke, modifier = modifier
-                            .padding(16.dp)
-                            .background(color = colorResource(id = R.color.black)))
-                        Row (modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically){
-                            IconButton(onClick = { shareIntent(viewModel.getJokeText(), context) }){
-                                Icon(imageVector = Icons.Default.Share , contentDescription = "Share", tint = Color.Red, modifier = Modifier.padding(end = 16.dp))
+                        JokeComponent(
+                            it.joke, modifier = modifier
+                                .padding(16.dp)
+                                .background(color = colorResource(id = R.color.black))
+                        )
+                        Row(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            IconButton(onClick = {
+                                shareIntent(
+                                    viewModel.getJokeText(),
+                                    context
+                                )
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Share,
+                                    contentDescription = "Share",
+                                    tint = Color.Red,
+                                    modifier = Modifier.padding(end = 16.dp)
+                                )
                             }
-                            IconButton(onClick = { viewModel.saveJoke() }){
-                                Icon(imageVector = Icons.Default.Favorite , contentDescription = "Like", tint = Color.Red)
+                            IconButton(onClick = { viewModel.saveJoke() }) {
+                                Icon(
+                                    imageVector = Icons.Default.Favorite,
+                                    contentDescription = "Like",
+                                    tint = Color.Red
+                                )
                             }
                         }
                     }

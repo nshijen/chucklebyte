@@ -1,6 +1,5 @@
 package com.shijen.a4o
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,9 +36,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.shijen.a4o.model.JokeResp
 import com.shijen.a4o.model.JokeType
 
@@ -184,20 +183,22 @@ fun ShowSnackbar(msg: String) {
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
-    var selected = Screens.MainScreen.route
-    navController.addOnDestinationChangedListener { controller, destination, arguments ->
-        Log.d("TEst", "BottomNavigationBar: ${destination.hierarchy}")
-        destination.route?.let {
-            selected = it
-        }
-    }
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
+
     val items = listOf(Screens.MainScreen, Screens.SavedList)
 
     NavigationBar {
         items.forEach { screen ->
             NavigationBarItem(
-                selected = selected == screen.route,
-                onClick = { navController.navigate(screen.route) },
+                selected = currentRoute == screen.route,
+                onClick = { navController.navigate(screen.route) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                } },
                 icon = {
                     Icon(
                         imageVector = screen.icon,
